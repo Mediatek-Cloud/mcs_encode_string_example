@@ -21,7 +21,7 @@ nvram set common deviceKey 456456456
 
 
 # mcs is your wifi ssid
-# 12345678 is your wifi ssid
+# 12345678 is your wifi password
 # 123123123 is your mcs deviceId
 # 456456456 is your mcs deviceKey
 
