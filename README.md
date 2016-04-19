@@ -2,15 +2,15 @@
 
 ## Usage
 
-* copy `config/project/mt7687_hdk/mcs_encode_string` to your `{SDK_Root}/config/project/mt7687_hdk/`
+* Copy the folder `config/project/mt7687_hdk/mcs_encode_string` to your SDK directory `{SDK_Root}/config/project/mt7687_hdk/`
 
-* copy `project/mt7687_hdk/apps/mcs_encode_string` to your `{SDK_Root}/config/project/mt7687_hdk/mcs_encode_string`
+* Copy the folder `project/mt7687_hdk/apps/mcs_encode_string` to your SDK directory `{SDK_Root}/config/project/mt7687_hdk/mcs_encode_string`
 
-* build code, on your SDK_Root : `./build.sh mt7687_hdk iot_sdk`
+* To build the code, run the command on your SDK_Root : `./build.sh mt7687_hdk iot_sdk`
 
-* Burn .bin to your 7687 device.
+* Burn the generated .bin file to your 7687 device.
 
-* Open your debug window, and type this:
+* Open the 7687 debug window, and type the following commands:
 
 ``` bash
 
@@ -28,7 +28,7 @@ nvram set common deviceKey 456456456
 ```
 * Reboot 7687
 
-* If you want to disabale/enable smart connection feature, go to `{SDK_Root}/mt7687_hdk/apps/mcs_encode_string/GCC/feature.mk` and change the `MTK_SMARTCONNECT_HDK = y` line.
+* If you want to enable/disable the smart connection feature, go to `{SDK_Root}/mt7687_hdk/apps/mcs_encode_string/GCC/feature.mk` and change the line `MTK_SMARTCONNECT_HDK` to `MTK_SMARTCONNECT_HDK = y` or `MTK_SMARTCONNECT_HDK = n`.
 
 ## SDK version
 
