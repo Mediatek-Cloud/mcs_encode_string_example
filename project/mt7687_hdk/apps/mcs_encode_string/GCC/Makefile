@@ -86,7 +86,7 @@ ifeq ($(MTK_MINICLI_ENABLE),y)
 APP_FILES       += $(APP_PATH_SRC)/cli_def.c
 endif
 
-APP_FILES       += $(APP_PATH_SRC)/mcs_upload.c
+APP_FILES       += $(APP_PATH_SRC)/mcs.c
 
 ifeq ($(MTK_SMARTCONNECT_HDK),y)
 APP_FILES       += $(APP_PATH_SRC)/smart_connection.c
