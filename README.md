@@ -6,7 +6,7 @@
 
 * copy `project/mt7687_hdk/apps/mcs_encode_string` to your `{SDK_Root}/config/project/mt7687_hdk/mcs_encode_string`
 
-* build code, on your SDK_Root : `./build.sh mt7687_hdk iot_sdk`
+* build code, on your SDK_Root : `./build.sh mt7687_hdk mcs_encode_string`
 
 * Burn .bin to your 7687 device.
 

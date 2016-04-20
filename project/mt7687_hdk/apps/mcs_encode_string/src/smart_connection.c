@@ -28,6 +28,7 @@ void smart_connection_init () {
     ret = hal_gpio_get_input(HAL_GPIO_0, &data_pull_up);
 
     if (1 == data_pull_up && 0 == startSmart) {
+        printf("click !!!\n");
         startSmart = 1;
         char param[0] = "connect\0";
         _smart_config_test(1, param);
