@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "Config...mcs_encode_string"
-export TARGET_PATH=project/mt7687_hdk/apps/mcs_encode_string/GCC
-export FREERTOS_CONFIG_PATH=$PWD/project/mt7687_hdk/apps/mcs_encode_string/inc
-
