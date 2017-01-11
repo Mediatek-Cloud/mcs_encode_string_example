@@ -50,20 +50,15 @@
 #include <nvdm.h>
 #include "mcs.h"
 #include "httpclient.h"
-#include "hal_pwm.h"
+#include "hal_md5.h"
+#define MAX_DATA_SIZE 1024
 
 #define SSID "mcs"
 #define PASSWORD "mcs12345678"
 
-/* HAL_PWM_CLOCK_40MHZ = 4 */
-#define mode (4)
-#define frequency (400000)
-
-/* gpio(pin 31) == pwm(pin 32) */
-#define pwm_pin 32
-#define pin 31
-#define PWM_CHANNEL "PWM"
-
+/* mcs setting */
+#define ENCODE_MD5_CHANNEL "encodeByMD5"
+#define DECODE_MD5_CHANNEL "decodeByMD5"
 
 #define APP_TASK_NAME                   "user entry"
 #define APP_TASK_STACKSIZE              (6*1024)
@@ -118,38 +113,40 @@ static uint32_t syslog_config_load(syslog_config_t *config)
 }
 #endif
 
-void start_pwm() {
-    /* pwm */
-    hal_pinmux_set_function(pin, 9);
-
-    uint32_t total_count = 0;
-
-    if (HAL_PWM_STATUS_OK != hal_pwm_init(HAL_PWM_CLOCK_40MHZ)) {
-      printf("hal_pwm_init fail");
-    }
-    if (HAL_PWM_STATUS_OK != hal_pwm_set_frequency(pwm_pin, frequency, &total_count)) {
-      printf("hal_pwm_set_frequency fail");
-    }
-    if (HAL_PWM_STATUS_OK != hal_pwm_set_duty_cycle(pwm_pin, 0)) {
-      printf("hal_pwm_set_duty_cycle fail");
-    }
-    if (HAL_PWM_STATUS_OK != hal_pwm_start(pwm_pin)) {
-      printf("hal_pwm_start fail");
-    }
-
-}
-
 void tcp_callback(char *rcv_buf) {
-    char *arr[5];
+
+    char *arr[7];
     char *del = ",";
     mcs_split(arr, rcv_buf, del);
+    // Dln7lL0G,zLfxhiabFnCEZZJc,1459307476444,encodeByMD5,test
+    if (0 == strncmp (arr[3], ENCODE_MD5_CHANNEL, strlen(ENCODE_MD5_CHANNEL))) {
+        /* encode BY MD5 */
+        uint8_t digest[HAL_MD5_DIGEST_SIZE] = {0};
+        printf("User give: %s \n", arr[4]);
+        hal_md5_context_t context = {0};
+        hal_md5_init(&context);
+        hal_md5_append(&context, arr[4], strlen(arr[4]));
+        hal_md5_end(&context, digest);
 
-    if (0 == strncmp(arr[3], PWM_CHANNEL, strlen(PWM_CHANNEL))) {
-        printf("value: %d\n", atoi(arr[4]));
-        hal_pwm_set_duty_cycle(pwm_pin, atoi(arr[4]));
+        uint8_t i;
+        char str_buffer [50] = {0};
+        strcpy(str_buffer, "");
+        for (i = 0; i < sizeof(digest); i++) {
+          if (i % 16 == 0) {
+              printf("\r\n");
+          }
+          char buffer [2];
+          sprintf (buffer, "%02x", digest[i]);
+          strcat(str_buffer, buffer);
+        }
+
+        /* send to MCS */
+        char data_buf [MAX_DATA_SIZE] = {0};
+        strcat(data_buf, DECODE_MD5_CHANNEL);
+        strcat(data_buf, ",,");
+        strcat(data_buf, str_buffer);
+        mcs_upload_datapoint(data_buf);
     }
-
-    printf("rcv_buf: %s\n", rcv_buf);
 }
 
 static void app_entry(void *args)
@@ -172,7 +169,6 @@ int main(void)
 {
     /* Do system initialization, eg: hardware, nvdm, logging and random seed. */
     system_init();
-    bsp_ept_gpio_setting_init();
 
 #ifndef MTK_DEBUG_LEVEL_NONE
     log_init(syslog_config_save, syslog_config_load, syslog_control_blocks);
@@ -185,8 +181,8 @@ int main(void)
      */
     wifi_config_t config = {0};
     config.opmode = WIFI_MODE_STA_ONLY;
-    strcpy((char *)config.sta_config.ssid, SSID);
-    strcpy((char *)config.sta_config.password, PASSWORD);
+    strcpy((char *)config.sta_config.ssid, (const char *)"mcs");
+    strcpy((char *)config.sta_config.password, (const char *)"mcs12345678");
     config.sta_config.ssid_length = strlen((const char *)config.sta_config.ssid);
     config.sta_config.password_length = strlen((const char *)config.sta_config.password);
 
@@ -210,7 +206,7 @@ int main(void)
     */
 
     xTaskCreate(app_entry, APP_TASK_NAME, APP_TASK_STACKSIZE/sizeof(portSTACK_TYPE), NULL, APP_TASK_PRIO, NULL);
-    start_pwm();
+
     /* Initialize cli task to enable user input cli command from uart port.*/
 
 #if defined(MTK_MINICLI_ENABLE)

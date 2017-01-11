@@ -16,12 +16,13 @@
 * Edit the `{SDK_Root}/project/mt7687_hdk/apps/mcs_encode_string/src/main.c`:
 
 ```
-// find line 55
+// find line 56
 #define SSID "Input your wifi ssid"
 #define PASSWORD "Input your wifi password"
 
 // find line 65
-#define PWM_CHANNEL "Input your PMW channnel ID"
+#define ENCODE_MD5_CHANNEL "encodeByMD5"
+#define DECODE_MD5_CHANNEL "decodeByMD5"
 
 ```
 
