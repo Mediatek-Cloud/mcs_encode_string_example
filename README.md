@@ -4,21 +4,31 @@
 
 * copy `mcs_encode_string` to your `{SDK_Root}/project/mt7687_hdk/apps/mcs_encode_string`
 
-* Edit the `{SDK_Root}/project/mt7687_hdk/apps/mcs_encode_string/main.c`:
+* Edit the `{SDK_Root}/project/mt7687_hdk/apps/mcs_encode_string/inc/mcs.h`:
 
 ```
 #define deviceId "Input your deviceId"
 #define deviceKey "Input your deviceKey"
-#define Ssid "Input your wifi"
-#define Password "Input your password"
 #define host "com"
 
 ```
 
-* build code, on your SDK_Root : `./build.sh mt7687_hdk mcs_encode_string`
+* Edit the `{SDK_Root}/project/mt7687_hdk/apps/mcs_encode_string/src/main.c`:
 
-* Burn .bin to your 7687 device.
+```
+// find line 55
+#define SSID "Input your wifi ssid"
+#define PASSWORD "Input your wifi password"
+
+// find line 65
+#define PWM_CHANNEL "Input your PMW channnel ID"
+
+```
+
+* build code, on your SDK_Root : `./build.sh mt7687_hdk mcs_encode_string bl`
+
+* Use flash tool to download `flash_download.ini` & `mt7687_bootloader.bin` & `mcs_pwm.bin` & `WIFI_RAM_CODE_MT76X7_in_flash.bin` to your 7687 device. (These files will see in the `{SDK_Root}/out/mt7687_hdk/mcs_pwm` path)
 
 ## SDK version
 
-* [3.3.1](https://cdn.mediatek.com/download_page/index.html?platform=RTOS&version=v3.3.1&filename=LinkIt_SDK_V3.3.1_public.tar.gz)
+* 4.1.0
